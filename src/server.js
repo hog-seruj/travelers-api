@@ -3,12 +3,14 @@ import 'dotenv/config';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { errors } from 'celebrate';
-// import { connectMongoDB } from './db/connectMongoDB.js';
+import { connectMongoDB } from './db/connectMongoDB.js';
 // Middlewares
 import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 // Routers
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -18,7 +20,11 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
-// Routes
+// Auth routers
+app.use(authRoutes);
+
+// User routers
+app.use(userRoutes);
 
 // Middleware 404
 app.use(notFoundHandler);
@@ -30,7 +36,7 @@ app.use(errors());
 app.use(errorHandler);
 
 // Connect Mongo
-// await connectMongoDB();
+await connectMongoDB();
 
 // Launch Server
 app.listen(PORT, () => {
