@@ -4,12 +4,14 @@ import {
   updateUserAvatar,
   updateUser,
   getCurrentUser,
+  getUserById,
 } from '../controllers/userController.js';
 import { authenticate } from '../middleware/authenticate.js';
 import { upload } from '../middleware/multer.js';
 import { getUsersSchema } from '../validations/usersValidation.js';
 import { celebrate } from 'celebrate';
 import { updateUserSchema } from '../validations/userValidation.js';
+import { userIdSchema } from '../validations/userValidation.js';
 
 const router = Router();
 
@@ -31,5 +33,7 @@ router.patch(
   celebrate(updateUserSchema),
   updateUser,
 );
+
+router.get('/users/:userId', celebrate(userIdSchema), getUserById);
 
 export default router;
