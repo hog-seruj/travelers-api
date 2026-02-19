@@ -2,6 +2,7 @@ import createHttpError from 'http-errors';
 import { User } from '../models/user.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
+<<<<<<< HEAD
 export const getUsers = async (req, res) => {
   const { page = 1, perPage = 8 } = req.query;
   const skip = (page - 1) * perPage;
