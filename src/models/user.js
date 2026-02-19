@@ -56,13 +56,13 @@ const userSchema = new Schema(
       },
     ],
   },
-  { timestamps: true },
+  { timestamps: true, versionKey: false },
 );
 
 // Middleware: If name is not provided, use part of email before @
 userSchema.pre('save', function (next) {
-  if (!this.name && this.email) {
-    this.name = this.email.split('@')[0];
+  if (!this.username) {
+    this.username = this.email;
   }
   next();
 });
