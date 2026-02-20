@@ -6,8 +6,6 @@ const userSchema = new Schema(
     name: {
       type: String,
       trim: true,
-      minlength: 2,
-      maxlength: 32,
       required: true,
     },
 
@@ -25,8 +23,6 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      minlength: 8,
-      select: false,
     },
 
     // Avatar URL
@@ -39,14 +35,12 @@ const userSchema = new Schema(
     description: {
       type: String,
       trim: true,
-      maxlength: 150,
     },
 
     // Number of articles authored
     articlesAmount: {
       type: Number,
       default: 0,
-      min: 0,
     },
 
     // Reference to saved articles
