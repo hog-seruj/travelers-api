@@ -1,10 +1,16 @@
 import { Router } from 'express';
 import { celebrate } from 'celebrate';
-import { getAllStories } from '../controllers/storiesController.js';
+import {
+  getAllStories,
+  updateStory,
+} from '../controllers/storiesController.js';
 import { addToSavedStories } from '../controllers/storiesController.js';
-import { getAllStoriesSchema } from '../validations/storiesValidation.js';
+import {
+  getAllStoriesSchema,
+  addToSavedStoriesSchema,
+  updateStorySchema,
+} from '../validations/storiesValidation.js';
 import { authenticate } from '../middleware/authenticate.js';
-import { addToSavedStoriesSchema } from '../validations/storiesValidation.js';
 import { getOwnStories } from '../controllers/storiesController.js';
 
 const router = Router();
@@ -18,6 +24,12 @@ router.post(
   authenticate,
   celebrate(addToSavedStoriesSchema),
   addToSavedStories,
+);
+router.patch(
+  '/stories/:storyId',
+  authenticate,
+  celebrate(updateStorySchema),
+  updateStory,
 );
 
 export default router;
