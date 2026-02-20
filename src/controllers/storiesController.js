@@ -37,3 +37,31 @@ export const getAllStories = async (req, res) => {
     stories,
   });
 };
+export const getOwnStories = async (req, res) => {
+  const { page = 1, perPage = 9 } = req.query;
+  const skip = (Number(page) - 1) * Number(perPage);
+
+  const ownerId = req.user._id;
+
+  const storiesQuery = Traveller.find({ ownerId });
+
+  const [totalStories, stories] = await Promise.all([
+    storiesQuery.clone().countDocuments(),
+    storiesQuery
+      .populate('category', 'name')
+      .populate('ownerId', 'name avatarUrl')
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(Number(perPage)),
+  ]);
+
+  const totalPages = Math.ceil(totalStories / perPage);
+
+  res.status(200).json({
+    page: Number(page),
+    perPage: Number(perPage),
+    totalStories,
+    totalPages,
+    stories,
+  });
+};
