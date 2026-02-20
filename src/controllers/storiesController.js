@@ -122,17 +122,15 @@ export const updateStory = async (req, res) => {
   if (article !== undefined) updateData.article = article;
   if (category !== undefined) updateData.category = category;
 
-  const updatedStory = await Traveller.findByIdAndUpdate(
-    storyId,
-    updateData,
-    { new: true, runValidators: true }
-  )
+  const updatedStory = await Traveller.findByIdAndUpdate(storyId, updateData, {
+    new: true,
+    runValidators: true,
+  })
     .populate('category', 'name')
     .populate('ownerId', 'name avatarUrl');
 
   res.status(200).json({
     message: 'Story updated successfully',
     data: updatedStory,
->>>>>>> dddf7cb... add private endpoint for story updates
   });
 };
