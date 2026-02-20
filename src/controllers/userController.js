@@ -24,6 +24,7 @@ export const getUsers = async (req, res) => {
   });
 };
 
+// PATCH /users/me/avatar
 export const updateUserAvatar = async (req, res) => {
   if (!req.file) {
     throw createHttpError(400, 'Avatar file is required');
@@ -37,8 +38,45 @@ export const updateUserAvatar = async (req, res) => {
     { new: true },
   );
 
+  if (!updatedUser) {
+    throw createHttpError(404, 'User not found');
+  }
+
   res.status(200).json({
     message: 'Avatar updated successfully',
     data: { avatarUrl: updatedUser.avatarUrl },
   });
+};
+
+// PATCH /users/me
+export const updateUser = async (req, res) => {
+  const { name, email, description } = req.body;
+
+  try {
+    const updateData = {
+      ...(name ? { name } : {}),
+      ...(email ? { email } : {}),
+      ...(description !== undefined ? { description } : {}),
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedUser) {
+      throw createHttpError(404, 'User not found');
+    }
+
+    res.status(200).json({
+      message: 'User updated successfully',
+      data: updatedUser,
+    });
+  } catch (err) {
+    // Duplicate key (email already exists)
+    if (err?.code === 11000) {
+      throw createHttpError(409, 'Email is already in use');
+    }
+    throw err;
+  }
 };
