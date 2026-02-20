@@ -1,5 +1,6 @@
 import createHttpError from 'http-errors';
 import { User } from '../models/user.js';
+import { Traveller } from '../models/traveller.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getUsers = async (req, res) => {
@@ -100,7 +101,7 @@ export const getUserById = async (req, res) => {
     throw createHttpError(404, 'User not found');
   }
 
-  const articleQuery = Article.find({ ownerId: userId });
+  const articleQuery = Traveller.find({ ownerId: userId });
 
   const [totalArticles, articles] = await Promise.all([
     articleQuery.clone().countDocuments(),
