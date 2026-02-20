@@ -7,7 +7,8 @@ const userSchema = new Schema(
       type: String,
       trim: true,
       minlength: 2,
-      maxlength: 50,
+      maxlength: 32,
+      required: true,
     },
 
     // Email for authentication
@@ -24,7 +25,7 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      minlength: 6,
+      minlength: 8,
       select: false,
     },
 
@@ -38,7 +39,7 @@ const userSchema = new Schema(
     description: {
       type: String,
       trim: true,
-      maxlength: 500,
+      maxlength: 150,
     },
 
     // Number of articles authored
@@ -58,14 +59,6 @@ const userSchema = new Schema(
   },
   { timestamps: true, versionKey: false },
 );
-
-// Middleware: If name is not provided, use part of email before @
-userSchema.pre('save', function (next) {
-  if (!this.username) {
-    this.username = this.email;
-  }
-  next();
-});
 
 // Hide sensitive data during serialization
 userSchema.methods.toJSON = function () {
