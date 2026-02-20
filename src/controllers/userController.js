@@ -25,6 +25,14 @@ export const getUsers = async (req, res) => {
 };
 
 // PATCH /users/me/avatar
+export const getCurrentUser = async (req, res) => {
+  if (!req.user) {
+    return res.status(404).json({ messaage: 'User not found' });
+  }
+
+  res.status(200).json({ success: true, user: req.user });
+};
+
 export const updateUserAvatar = async (req, res) => {
   if (!req.file) {
     throw createHttpError(400, 'Avatar file is required');

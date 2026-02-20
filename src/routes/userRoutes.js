@@ -3,6 +3,7 @@ import {
   getUsers,
   updateUserAvatar,
   updateUser,
+  getCurrentUser,
 } from '../controllers/userController.js';
 import { authenticate } from '../middleware/authenticate.js';
 import { upload } from '../middleware/multer.js';
@@ -14,6 +15,8 @@ const router = Router();
 
 // get All users
 router.get('/users', celebrate(getUsersSchema), getUsers);
+
+router.get('/users/me', authenticate, getCurrentUser);
 
 router.patch(
   '/users/me/avatar',
