@@ -17,3 +17,11 @@ export const getAllStoriesSchema = {
     sort: Joi.string().valid(SORT_NEWEST, SORT_POPULAR).default(SORT_NEWEST),
   }),
 };
+
+
+
+export const addToSavedStoriesSchema = {
+  [Segments.PARAMS]: Joi.object({
+    storyId: Joi.string().custom(objectIdValidator).required(),
+  }),
+};
