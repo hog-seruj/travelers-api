@@ -1,5 +1,6 @@
 import createHttpError from 'http-errors';
 import { User } from '../models/user.js';
+import { Traveller } from '../models/traveller.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getUsers = async (req, res) => {
@@ -87,4 +88,39 @@ export const updateUser = async (req, res) => {
     }
     throw err;
   }
+};
+
+export const getUserById = async (req, res) => {
+  const { userId } = req.params;
+
+  const { page = 1, perPage = 6 } = req.query;
+  const skip = (page - 1) * perPage;
+
+  const user = await User.findOne({ _id: userId });
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const articleQuery = Traveller.find({ ownerId: userId });
+
+  const [totalArticles, articles] = await Promise.all([
+    articleQuery.clone().countDocuments(),
+    articleQuery.skip(skip).limit(perPage),
+  ]);
+
+  const totalPages = Math.ceil(totalArticles / perPage);
+
+  const userData = user.toObject();
+  delete userData.password;
+
+  res.status(200).json({
+    user: userData,
+    articles: {
+      page,
+      perPage,
+      totalPages,
+      articles,
+      totalArticles,
+    },
+  });
 };
