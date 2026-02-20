@@ -12,6 +12,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import storiesRoutes from './routes/storiesRoutes.js';
+import storyRoutes from './routes/storyRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -29,6 +30,9 @@ app.use(userRoutes);
 
 // Stories routes
 app.use(storiesRoutes);
+
+// Story routers
+app.use(storyRoutes);
 
 // Middleware 404
 app.use(notFoundHandler);
