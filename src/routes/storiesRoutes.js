@@ -3,15 +3,21 @@ import { celebrate } from 'celebrate';
 import {
   getAllStories,
   updateStory,
+  createStory,
+  addToSavedStories,
+  getOwnStories,
+  removeSavedStories,
+  getSavedStories,
 } from '../controllers/storiesController.js';
-import { addToSavedStories } from '../controllers/storiesController.js';
 import {
   getAllStoriesSchema,
   addToSavedStoriesSchema,
   updateStorySchema,
+  createStorySchema,
+  removeSavedStoriesSchema,
+  getSavedStoriesSchema,
 } from '../validations/storiesValidation.js';
 import { authenticate } from '../middleware/authenticate.js';
-import { getOwnStories } from '../controllers/storiesController.js';
 
 const router = Router();
 
@@ -30,6 +36,27 @@ router.patch(
   authenticate,
   celebrate(updateStorySchema),
   updateStory,
+);
+
+router.post(
+  '/stories',
+  authenticate,
+  celebrate(createStorySchema),
+  createStory,
+);
+
+router.delete(
+  '/stories/:storyId/saved',
+  authenticate,
+  celebrate(removeSavedStoriesSchema),
+  removeSavedStories,
+);
+
+router.get(
+  '/stories/saved',
+  authenticate,
+  celebrate(getSavedStoriesSchema),
+  getSavedStories,
 );
 
 export default router;
