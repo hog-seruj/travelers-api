@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
 import { SORT_POPULAR, SORT_NEWEST } from '../constants/stories.js';
-import { Traveller } from '../models/traveller.js';
+import { Stories } from '../models/stories.js';
 import '../models/category.js';
 import { User } from '../models/user.js';
 
@@ -8,7 +8,7 @@ export const getAllStories = async (req, res) => {
   const { page = 1, perPage = 9, category, sort = SORT_NEWEST } = req.query;
   const skip = (page - 1) * perPage;
 
-  const storiesQuery = Traveller.find();
+  const storiesQuery = Stories.find();
 
   if (category) {
     storiesQuery.where('category').equals(category);
@@ -54,7 +54,7 @@ export const addToSavedStories = async (req, res) => {
   }
 
   //Find story:
-  const story = await Traveller.findById(storyId);
+  const story = await Stories.findById(storyId);
   if (!story) {
     return res.status(404).json({ message: 'Story not found' });
   }
@@ -77,7 +77,7 @@ export const getOwnStories = async (req, res) => {
 
   const ownerId = req.user._id;
 
-  const storiesQuery = Traveller.find({ ownerId });
+  const storiesQuery = Stories.find({ ownerId });
 
   const [totalStories, stories] = await Promise.all([
     storiesQuery.clone().countDocuments(),
@@ -104,7 +104,7 @@ export const updateStory = async (req, res) => {
   const { storyId } = req.params;
   const { img, title, article, category } = req.body;
 
-  const story = await Traveller.findById(storyId);
+  const story = await Stories.findById(storyId);
 
   if (!story) {
     throw createHttpError(404, 'Story not found');
@@ -122,7 +122,7 @@ export const updateStory = async (req, res) => {
   if (article !== undefined) updateData.article = article;
   if (category !== undefined) updateData.category = category;
 
-  const updatedStory = await Traveller.findByIdAndUpdate(storyId, updateData, {
+  const updatedStory = await Stories.findByIdAndUpdate(storyId, updateData, {
     new: true,
     runValidators: true,
   })
