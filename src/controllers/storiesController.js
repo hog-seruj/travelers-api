@@ -134,3 +134,62 @@ export const updateStory = async (req, res) => {
     data: updatedStory,
   });
 };
+
+export const createStory = async (req, res) => {
+  const ownerId = req.user._id;
+
+  const story = await Traveller.create({
+    ...req.body,
+    ownerId,
+    favoriteCount: 0,
+  });
+
+  res.status(201).json({
+    status: 201,
+    message: 'Story created successfully',
+    data: story,
+  });
+};
+
+export const removeSavedStories = async (req, res) => {
+  const { storyId } = req.params;
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    { $pull: { savedArticles: storyId } },
+    { new: true },
+  );
+  //
+  res.status(200).json({
+    message: 'Story removed from saved articles',
+    stories: updatedUser.savedArticles,
+  });
+};
+
+export const getSavedStories = async (req, res) => {
+  const { page = 1, perPage = 4 } = req.query;
+  const skip = (page - 1) * perPage;
+
+  const user = await User.findById(req.user._id).select('savedArticles');
+  const savedIds = user.savedArticles ?? [];
+
+  const storiesQuery = Traveller.find({ _id: { $in: savedIds } });
+
+  const [totalStories, stories] = await Promise.all([
+    storiesQuery.clone().countDocuments(),
+    storiesQuery
+      .populate('category', 'name')
+      .populate('ownerId', 'name avatarUrl')
+      .skip(skip)
+      .limit(perPage),
+  ]);
+
+  const totalPages = Math.ceil(totalStories / perPage);
+
+  res.status(200).json({
+    page,
+    perPage,
+    totalStories,
+    totalPages,
+    stories,
+  });
+};
