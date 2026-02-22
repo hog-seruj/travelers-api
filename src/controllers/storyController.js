@@ -1,9 +1,9 @@
-import { Traveller } from '../models/traveller.js';
+import { Stories } from '../models/stories.js';
 
 export const createStory = async (req, res) => {
   const ownerId = req.user._id;
 
-  const story = await Traveller.create({
+  const story = await Stories.create({
     ...req.body,
     ownerId,
     favoriteCount: 0,
