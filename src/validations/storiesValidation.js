@@ -46,6 +46,12 @@ export const createStorySchema = {
   }),
 };
 
+export const getStoryByIdSchema = {
+  [Segments.PARAMS]: Joi.object({
+    storyId: Joi.string().custom(objectIdValidator).required(),
+  }),
+};
+
 export const removeSavedStoriesSchema = {
   [Segments.PARAMS]: Joi.object({
     storyId: Joi.string().custom(objectIdValidator).required(),
