@@ -71,6 +71,20 @@ export const addToSavedStories = async (req, res) => {
   });
 };
 
+export const getStoryById = async (req, res) => {
+  const { storyId } = req.params;
+
+  const story = await Traveller.findById(storyId)
+    .populate('category', 'name')
+    .populate('ownerId', 'name');
+
+  if (!story) {
+    throw createHttpError(404, 'Story not found');
+  }
+
+  res.status(200).json(story);
+};
+
 export const getOwnStories = async (req, res) => {
   const { page = 1, perPage = 9 } = req.query;
   const skip = (Number(page) - 1) * Number(perPage);

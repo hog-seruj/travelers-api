@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { celebrate } from 'celebrate';
 import {
   getAllStories,
+  getStoryById,
   updateStory,
   createStory,
   addToSavedStories,
@@ -11,6 +12,7 @@ import {
 } from '../controllers/storiesController.js';
 import {
   getAllStoriesSchema,
+  getStoryByIdSchema,
   addToSavedStoriesSchema,
   updateStorySchema,
   createStorySchema,
@@ -57,6 +59,12 @@ router.get(
   authenticate,
   celebrate(getSavedStoriesSchema),
   getSavedStories,
+);
+
+router.get(
+  '/stories/:storyId',
+  celebrate(getStoryByIdSchema),
+  getStoryById,
 );
 
 export default router;
