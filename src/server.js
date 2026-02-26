@@ -9,6 +9,7 @@ import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 // Routers
+// import router from './routes/index.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import storiesRoutes from './routes/storiesRoutes.js';
@@ -20,6 +21,9 @@ app.use(logger);
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
+
+//Підключені роути з файлу routes/index.js
+// app.use('api', router);
 
 // Auth routers
 app.use(authRoutes);
