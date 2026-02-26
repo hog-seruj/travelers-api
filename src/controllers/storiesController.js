@@ -74,7 +74,7 @@ export const addToSavedStories = async (req, res) => {
 export const getStoryById = async (req, res) => {
   const { storyId } = req.params;
 
-  const story = await Traveller.findById(storyId)
+  const story = await Stories.findById(storyId)
     .populate('category', 'name')
     .populate('ownerId', 'name');
 
@@ -152,7 +152,7 @@ export const updateStory = async (req, res) => {
 export const createStory = async (req, res) => {
   const ownerId = req.user._id;
 
-  const story = await Traveller.create({
+  const story = await Stories.create({
     ...req.body,
     ownerId,
     favoriteCount: 0,
@@ -186,7 +186,7 @@ export const getSavedStories = async (req, res) => {
   const user = await User.findById(req.user._id).select('savedArticles');
   const savedIds = user.savedArticles ?? [];
 
-  const storiesQuery = Traveller.find({ _id: { $in: savedIds } });
+  const storiesQuery = Stories.find({ _id: { $in: savedIds } });
 
   const [totalStories, stories] = await Promise.all([
     storiesQuery.clone().countDocuments(),

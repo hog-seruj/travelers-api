@@ -12,59 +12,57 @@ import {
 } from '../controllers/storiesController.js';
 import {
   getAllStoriesSchema,
-  getStoryByIdSchema,
-  addToSavedStoriesSchema,
+  storyIdSchema,
   updateStorySchema,
   createStorySchema,
-  removeSavedStoriesSchema,
   getSavedStoriesSchema,
 } from '../validations/storiesValidation.js';
 import { authenticate } from '../middleware/authenticate.js';
 
 const router = Router();
 
-router.get('/stories', celebrate(getAllStoriesSchema), getAllStories);
-router.get('/stories/my', authenticate, getOwnStories);
+router.get('/', celebrate(getAllStoriesSchema), getAllStories);
+router.get('/:storyId',celebrate(storyIdSchema), getStoryById);
+router.get('/my', authenticate, getOwnStories);
+
 
 // Private endpoint to add a story to the user's saved articles
 router.post(
-  '/:storyId/save',
+  '/:storyId/saved',
   authenticate,
-  celebrate(addToSavedStoriesSchema),
+  celebrate(storyIdSchema),
   addToSavedStories,
 );
+
 router.patch(
-  '/stories/:storyId',
+  '/:storyId',
   authenticate,
   celebrate(updateStorySchema),
   updateStory,
 );
 
 router.post(
-  '/stories',
+  '/',
   authenticate,
   celebrate(createStorySchema),
   createStory,
 );
 
+
 router.delete(
-  '/stories/:storyId/saved',
+  '/:storyId/saved',
   authenticate,
-  celebrate(removeSavedStoriesSchema),
+  celebrate(storyIdSchema),
   removeSavedStories,
 );
 
+
 router.get(
-  '/stories/saved',
+  '/saved',
   authenticate,
   celebrate(getSavedStoriesSchema),
   getSavedStories,
 );
 
-router.get(
-  '/stories/:storyId',
-  celebrate(getStoryByIdSchema),
-  getStoryById,
-);
 
 export default router;

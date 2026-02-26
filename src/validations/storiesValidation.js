@@ -18,7 +18,8 @@ export const getAllStoriesSchema = {
   }),
 };
 
-export const addToSavedStoriesSchema = {
+//  storyIdSchema використати  до всіх маршрутів де використовується storyId
+export const storyIdSchema = {
   [Segments.PARAMS]: Joi.object({
     storyId: Joi.string().custom(objectIdValidator).required(),
   }),
@@ -46,17 +47,6 @@ export const createStorySchema = {
   }),
 };
 
-export const getStoryByIdSchema = {
-  [Segments.PARAMS]: Joi.object({
-    storyId: Joi.string().custom(objectIdValidator).required(),
-  }),
-};
-
-export const removeSavedStoriesSchema = {
-  [Segments.PARAMS]: Joi.object({
-    storyId: Joi.string().custom(objectIdValidator).required(),
-  }),
-};
 
 export const getSavedStoriesSchema = {
   query: Joi.object({
