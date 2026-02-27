@@ -14,6 +14,10 @@ export const getUsers = async (req, res) => {
     usersQuery.skip(skip).limit(perPage).sort({ articlesAmount: 'desc' }),
   ]);
 
+  users.sort((a, b) =>
+    a.name.localeCompare(b.name, ['uk', 'en'], { sensitivity: 'base' }),
+  );
+
   const totalPages = Math.ceil(totalItems / perPage);
 
   res.status(200).json({
