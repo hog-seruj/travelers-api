@@ -17,17 +17,17 @@ import {
 
 const router = Router();
 
-router.post('/auth/register', celebrate(registerUserSchema), registerUser);
-router.post('/auth/login', celebrate(loginUserSchema), loginUser);
-router.post('/auth/refresh', refreshUserSession);
-router.post('/auth/logout', logoutUser);
+router.post('/register', celebrate(registerUserSchema), registerUser);
+router.post('/login', celebrate(loginUserSchema), loginUser);
+router.post('/refresh', refreshUserSession);
+router.post('/logout', logoutUser);
 router.post(
-  '/auth/request-reset-email',
+  '/request-reset-email',
   celebrate(requestResetEmailSchema),
   requestResetEmail,
 );
 router.post(
-  '/auth/reset-password',
+  '/reset-password',
   celebrate(resetPasswordSchema),
   resetPassword,
 );

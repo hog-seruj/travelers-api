@@ -22,13 +22,13 @@ app.use(cors());
 app.use(cookieParser());
 
 // Auth routers
-app.use(authRoutes);
+app.use('/auth', authRoutes);
 
 // User routers
-app.use(userRoutes);
+app.use('/users', userRoutes);
 
 // Stories routes
-app.use(storiesRoutes);
+app.use('/stories', storiesRoutes);
 
 // Middleware 404
 app.use(notFoundHandler);
