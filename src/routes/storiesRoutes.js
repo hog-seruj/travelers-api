@@ -14,7 +14,8 @@ import {
   getAllStoriesSchema,
   getStoryByIdSchema,
   addToSavedStoriesSchema,
-  updateStorySchema,
+  updateStoryBodySchema,
+  storyIdSchema,
   createStorySchema,
   removeSavedStoriesSchema,
   getSavedStoriesSchema,
@@ -26,17 +27,19 @@ const router = Router();
 router.get('/stories', celebrate(getAllStoriesSchema), getAllStories);
 router.get('/stories/my', authenticate, getOwnStories);
 
-// Private endpoint to add a story to the user's saved articles
+
 router.post(
   '/:storyId/save',
   authenticate,
   celebrate(addToSavedStoriesSchema),
   addToSavedStories,
 );
+
 router.patch(
   '/stories/:storyId',
   authenticate,
-  celebrate(updateStorySchema),
+  celebrate(storyIdSchema),
+  celebrate(updateStoryBodySchema),
   updateStory,
 );
 
