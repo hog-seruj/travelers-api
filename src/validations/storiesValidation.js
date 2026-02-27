@@ -26,9 +26,6 @@ export const storyIdSchema = {
 };
 
 export const updateStorySchema = {
-  [Segments.PARAMS]: Joi.object({
-    storyId: Joi.string().custom(objectIdValidator).required(),
-  }),
   [Segments.BODY]: Joi.object({
     img: Joi.string().optional(),
     title: Joi.string().trim().optional(),
@@ -36,6 +33,7 @@ export const updateStorySchema = {
     category: Joi.string().custom(objectIdValidator).optional(),
   }).min(1), // Мінімум одне поле має бути оновлено
 };
+
 
 export const createStorySchema = {
   [Segments.BODY]: Joi.object({
