@@ -32,7 +32,7 @@ app.use('/users', userRoutes);
 app.use('/stories', storiesRoutes);
 
 //Categories routes
-app.use(categoriesRoutes);
+app.use('/categories', categoriesRoutes);
 
 // Middleware 404
 app.use(notFoundHandler);
