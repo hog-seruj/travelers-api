@@ -3,31 +3,6 @@ import { User } from '../models/user.js';
 import { Stories } from '../models/stories.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
-// get users classic pagination with page and perPage
-// export const getUsers = async (req, res) => {
-//   const page = Number(req.query.page) || 1;
-//   const perPage = Number(req.query.perPage) || 8;
-//   // const { page = 1, perPage = 8 } = req.query;
-//   const skip = (page - 1) * perPage;
-
-//   const usersQuery = User.find();
-
-//   const [totalItems, users] = await Promise.all([
-//     usersQuery.clone().countDocuments(),
-//     usersQuery.skip(skip).limit(perPage).sort({ articlesAmount: 'desc' }),
-//   ]);
-
-//   const totalPages = Math.ceil(totalItems / perPage);
-
-//   res.status(200).json({
-//     page,
-//     perPage,
-//     totalItems,
-//     totalPages,
-//     users,
-//   });
-// };
-
 // get users pagination with another next page for page 2 and beyond
 export const getUsers = async (req, res) => {
   try {
@@ -43,12 +18,12 @@ export const getUsers = async (req, res) => {
     const skip = isFirstPage ? 0 : perPage + (page - 2) * nextPerPage;
 
     const usersQuery = User.find();
+    usersQuery.sort({ articlesAmount: -1, _id: 1 });
+    console.log(usersQuery);
 
     const [totalItems, users] = await Promise.all([
       usersQuery.clone().countDocuments(),
-      usersQuery.skip(skip).limit(limit).sort({
-        articlesAmount: 'desc',
-      }),
+      usersQuery.skip(skip).limit(limit),
     ]);
 
     //  count totalPages: 1‑st page and perPage, other from nextPerPage
