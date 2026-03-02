@@ -54,7 +54,7 @@ export const addToSavedStories = async (req, res) => {
   }
 
   //Find story:
-  const story = await Stories.findById(storyId);
+  let story = await Stories.findById(storyId);
   if (!story) {
     return res.status(404).json({ message: 'Story not found' });
   }
@@ -62,12 +62,20 @@ export const addToSavedStories = async (req, res) => {
   //Check if the story is already added to savedArticles:
   if (!user.savedArticles.includes(storyId)) {
     user.savedArticles.push(storyId);
+    //change favoriteCount in Story
+    story = await Stories.findOneAndUpdate(
+      { _id: storyId },
+      { favoriteCount: story.favoriteCount + 1 },
+      { new: true },
+    );
     await user.save();
+    await story.save();
   }
 
   res.status(200).json({
     message: 'Story added to saved articles',
     savedArticles: user.savedArticles,
+    storyFavoriteCount: story.favoriteCount,
   });
 };
 
@@ -166,16 +174,42 @@ export const createStory = async (req, res) => {
 };
 
 export const removeSavedStories = async (req, res) => {
+  const { _id: userId } = req.user;
   const { storyId } = req.params;
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user._id,
-    { $pull: { savedArticles: storyId } },
-    { new: true },
-  );
+
+  //Find user:
+  let user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
+  //Find story:
+  let story = await Stories.findById(storyId);
+  if (!story) {
+    return res.status(404).json({ message: 'Story not found' });
+  }
+
+  if (user.savedArticles.includes(storyId)) {
+    user = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { savedArticles: storyId } },
+      { new: true },
+    );
+    //change favoriteCount in Story
+    story = await Stories.findOneAndUpdate(
+      { _id: storyId },
+      { favoriteCount: story.favoriteCount - 1 },
+      { new: true },
+    );
+    await user.save();
+    await story.save();
+  }
+
   //
   res.status(200).json({
     message: 'Story removed from saved articles',
-    stories: updatedUser.savedArticles,
+    stories: user.savedArticles,
+    storyFavoriteCount: story.favoriteCount,
   });
 };
 
