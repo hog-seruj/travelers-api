@@ -18,14 +18,13 @@ import {
   getSavedStoriesSchema,
 } from '../validations/storiesValidation.js';
 import { authenticate } from '../middleware/authenticate.js';
+import { upload } from '../middleware/multer.js';
 
 const router = Router();
 
-
 router.get('/', celebrate(getAllStoriesSchema), getAllStories);
-router.get('/:storyId',celebrate(storyIdSchema), getStoryById);
+router.get('/:storyId', celebrate(storyIdSchema), getStoryById);
 router.get('/my', authenticate, getOwnStories);
-
 
 // Private endpoint to add a story to the user's saved articles
 router.post(
@@ -38,20 +37,19 @@ router.post(
 router.patch(
   '/:storyId',
   authenticate,
+  upload.single('storyImage'),
   celebrate(storyIdSchema),
   celebrate(updateStorySchema),
   updateStory,
 );
 
-
-
 router.post(
   '/',
   authenticate,
+  upload.single('storyImage'),
   celebrate(createStorySchema),
   createStory,
 );
-
 
 router.delete(
   '/:storyId/saved',
@@ -60,13 +58,11 @@ router.delete(
   removeSavedStories,
 );
 
-
 router.get(
   '/saved',
   authenticate,
   celebrate(getSavedStoriesSchema),
   getSavedStories,
 );
-
 
 export default router;
