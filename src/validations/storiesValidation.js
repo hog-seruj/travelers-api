@@ -27,13 +27,11 @@ export const storyIdSchema = {
 
 export const updateStorySchema = {
   [Segments.BODY]: Joi.object({
-    img: Joi.string().optional(),
     title: Joi.string().trim().optional(),
     article: Joi.string().trim().optional(),
     category: Joi.string().custom(objectIdValidator).optional(),
-  }).min(1), // Мінімум одне поле має бути оновлено
+  }),
 };
-
 
 export const createStorySchema = {
   [Segments.BODY]: Joi.object({
@@ -41,10 +39,8 @@ export const createStorySchema = {
     article: Joi.string().min(10).required(),
     category: Joi.string().custom(objectIdValidator).required(),
     date: Joi.string(),
-    img: Joi.string().uri().required(),
   }),
 };
-
 
 export const getSavedStoriesSchema = {
   query: Joi.object({

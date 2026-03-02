@@ -3,6 +3,7 @@ import { SORT_POPULAR, SORT_NEWEST } from '../constants/stories.js';
 import { Stories } from '../models/stories.js';
 import '../models/category.js';
 import { User } from '../models/user.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getAllStories = async (req, res) => {
   const { page = 1, perPage = 9, category, sort = SORT_NEWEST } = req.query;
@@ -124,32 +125,26 @@ export const getOwnStories = async (req, res) => {
 
 export const updateStory = async (req, res) => {
   const { storyId } = req.params;
-  const { img, title, article, category } = req.body;
 
-  const story = await Stories.findById(storyId);
+  const updateData = { ...req.body };
+  if (req.file) {
+    const result = await saveFileToCloudinary(req.file.buffer);
+    updateData.img = result.secure_url;
+  }
 
-  if (!story) {
+  const updatedStory = await Stories.findOneAndUpdate(
+    {
+      _id: storyId,
+      ownerId: req.user._id,
+    },
+    updateData,
+    {
+      new: true,
+    },
+  );
+  if (!updatedStory) {
     throw createHttpError(404, 'Story not found');
   }
-
-  // Перевірка, чи користувач є власником історії
-  if (story.ownerId.toString() !== req.user._id.toString()) {
-    throw createHttpError(403, 'You do not have permission to edit this story');
-  }
-
-  // Оновлення полів
-  const updateData = {};
-  if (img !== undefined) updateData.img = img;
-  if (title !== undefined) updateData.title = title;
-  if (article !== undefined) updateData.article = article;
-  if (category !== undefined) updateData.category = category;
-
-  const updatedStory = await Stories.findByIdAndUpdate(storyId, updateData, {
-    new: true,
-    runValidators: true,
-  })
-    .populate('category', 'name')
-    .populate('ownerId', 'name avatarUrl');
 
   res.status(200).json({
     message: 'Story updated successfully',
@@ -159,12 +154,19 @@ export const updateStory = async (req, res) => {
 
 export const createStory = async (req, res) => {
   const ownerId = req.user._id;
+  if (!req.file) {
+    throw createHttpError(400, 'Image is required');
+  }
 
-  const story = await Stories.create({
+  const storyData = {
     ...req.body,
     ownerId,
     favoriteCount: 0,
-  });
+  };
+  const result = await saveFileToCloudinary(req.file.buffer);
+  storyData.img = result.secure_url;
+
+  const story = await Stories.create(storyData);
 
   res.status(201).json({
     status: 201,
