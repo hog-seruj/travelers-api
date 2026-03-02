@@ -1,11 +1,13 @@
 import { Category } from '../models/category.js';
 
 export const getAllCategories = async (_req, res) => {
-  const categories = await Category.find();
+  try {
+    const categories = await Category.find();
 
-  res.status(200).json({
-    status: 200,
-    message: 'Successfully fetched categories',
-    data: categories,
-  });
+    res.status(200).json({ categories });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: 'Failed to retrieve categories', error: err.message });
+  }
 };

@@ -19,7 +19,6 @@ export const getUsers = async (req, res) => {
 
     const usersQuery = User.find();
     usersQuery.sort({ articlesAmount: -1, _id: 1 });
-    console.log(usersQuery);
 
     const [totalItems, users] = await Promise.all([
       usersQuery.clone().countDocuments(),

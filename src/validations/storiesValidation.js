@@ -12,7 +12,8 @@ const objectIdValidator = (value, helpers) => {
 export const getAllStoriesSchema = {
   [Segments.QUERY]: Joi.object({
     page: Joi.number().integer().min(1).default(1),
-    perPage: Joi.number().integer().min(3).max(18).default(9),
+    perPage: Joi.number().integer().min(2).max(18).default(9),
+    nextPerPage: Joi.number().integer().min(2).max(19).default(9),
     category: Joi.string().custom(objectIdValidator),
     sort: Joi.string().valid(SORT_NEWEST, SORT_POPULAR).default(SORT_NEWEST),
   }),
@@ -34,7 +35,6 @@ export const updateStorySchema = {
   }).min(1), // Мінімум одне поле має бути оновлено
 };
 
-
 export const createStorySchema = {
   [Segments.BODY]: Joi.object({
     title: Joi.string().min(3).max(200).required(),
@@ -44,7 +44,6 @@ export const createStorySchema = {
     img: Joi.string().uri().required(),
   }),
 };
-
 
 export const getSavedStoriesSchema = {
   query: Joi.object({

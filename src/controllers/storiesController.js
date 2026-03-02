@@ -5,8 +5,15 @@ import '../models/category.js';
 import { User } from '../models/user.js';
 
 export const getAllStories = async (req, res) => {
-  const { page = 1, perPage = 9, category, sort = SORT_NEWEST } = req.query;
-  const skip = (page - 1) * perPage;
+  let { page, perPage, category, nextPerPage, sort = SORT_NEWEST } = req.query;
+  // const skip = (page - 1) * perPage;
+  page = Number(page) || 1;
+  perPage = Number(perPage) || 9;
+  nextPerPage = nextPerPage != null ? Number(nextPerPage) : 3;
+
+  const isFirstPage = page === 1;
+  const limit = isFirstPage ? perPage : nextPerPage;
+  const skip = isFirstPage ? 0 : perPage + (page - 2) * nextPerPage;
 
   const storiesQuery = Stories.find();
 
@@ -15,9 +22,9 @@ export const getAllStories = async (req, res) => {
   }
 
   if (sort === SORT_POPULAR) {
-    storiesQuery.sort({ favoriteCount: -1 });
+    storiesQuery.sort({ favoriteCount: -1, _id: -1 });
   } else {
-    storiesQuery.sort({ date: -1 });
+    storiesQuery.sort({ date: -1, _id: -1 });
   }
 
   const [totalStories, stories] = await Promise.all([
@@ -26,14 +33,17 @@ export const getAllStories = async (req, res) => {
       .populate('category', 'name')
       .populate('ownerId', 'name avatarUrl')
       .skip(skip)
-      .limit(perPage),
+      .limit(limit),
   ]);
-
-  const totalPages = Math.ceil(totalStories / perPage);
+  //  count totalPages: 1‑st page and perPage, other from nextPerPage
+  const remaining = Math.max(totalStories - perPage, 0);
+  const extraPages = remaining > 0 ? Math.ceil(remaining / nextPerPage) : 0;
+  const totalPages = 1 + extraPages;
 
   res.status(200).json({
     page,
     perPage,
+    nextPerPage,
     totalStories,
     totalPages,
     stories,
