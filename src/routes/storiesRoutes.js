@@ -18,6 +18,7 @@ import {
   getSavedStoriesSchema,
 } from '../validations/storiesValidation.js';
 import { authenticate } from '../middleware/authenticate.js';
+import { upload } from '../middleware/multer.js';
 
 const router = Router();
 
@@ -43,12 +44,19 @@ router.post(
 router.patch(
   '/:storyId',
   authenticate,
+  upload.single('storyImage'),
   celebrate(storyIdSchema),
   celebrate(updateStorySchema),
   updateStory,
 );
 
-router.post('/', authenticate, celebrate(createStorySchema), createStory);
+router.post(
+  '/',
+  authenticate,
+  upload.single('storyImage'),
+  celebrate(createStorySchema),
+  createStory,
+);
 
 router.delete(
   '/:storyId/saved',
