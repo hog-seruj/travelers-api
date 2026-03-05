@@ -21,11 +21,16 @@ import { authenticate } from '../middleware/authenticate.js';
 
 const router = Router();
 
-
 router.get('/', celebrate(getAllStoriesSchema), getAllStories);
-router.get('/:storyId',celebrate(storyIdSchema), getStoryById);
-router.get('/my', authenticate, getOwnStories);
+router.get(
+  '/saved',
+  authenticate,
+  celebrate(getSavedStoriesSchema),
+  getSavedStories,
+);
 
+router.get('/:storyId', celebrate(storyIdSchema), getStoryById);
+router.get('/my', authenticate, getOwnStories);
 
 // Private endpoint to add a story to the user's saved articles
 router.post(
@@ -43,15 +48,7 @@ router.patch(
   updateStory,
 );
 
-
-
-router.post(
-  '/',
-  authenticate,
-  celebrate(createStorySchema),
-  createStory,
-);
-
+router.post('/', authenticate, celebrate(createStorySchema), createStory);
 
 router.delete(
   '/:storyId/saved',
@@ -59,14 +56,5 @@ router.delete(
   celebrate(storyIdSchema),
   removeSavedStories,
 );
-
-
-router.get(
-  '/saved',
-  authenticate,
-  celebrate(getSavedStoriesSchema),
-  getSavedStories,
-);
-
 
 export default router;
