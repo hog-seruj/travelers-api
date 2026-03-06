@@ -29,9 +29,9 @@ router.get(
   celebrate(getSavedStoriesSchema),
   getSavedStories,
 );
+router.get('/my', authenticate, getOwnStories);
 
 router.get('/:storyId', celebrate(storyIdSchema), getStoryById);
-router.get('/my', authenticate, getOwnStories);
 
 // Private endpoint to add a story to the user's saved articles
 router.post(
