@@ -111,13 +111,13 @@ export const getOwnStories = async (req, res) => {
   const ownerId = req.user._id;
 
   const storiesQuery = Stories.find({ ownerId });
+  storiesQuery.sort({ date: -1, _id: 1 });
 
   const [totalStories, stories] = await Promise.all([
     storiesQuery.clone().countDocuments(),
     storiesQuery
       .populate('category', 'name')
       .populate('ownerId', 'name avatarUrl')
-      .sort({ date: -1 })
       .skip(skip)
       .limit(Number(perPage)),
   ]);
