@@ -23,6 +23,13 @@ import { upload } from '../middleware/multer.js';
 const router = Router();
 
 router.get('/', celebrate(getAllStoriesSchema), getAllStories);
+router.get(
+  '/saved',
+  authenticate,
+  celebrate(getSavedStoriesSchema),
+  getSavedStories,
+);
+
 router.get('/:storyId', celebrate(storyIdSchema), getStoryById);
 router.get('/my', authenticate, getOwnStories);
 
@@ -56,13 +63,6 @@ router.delete(
   authenticate,
   celebrate(storyIdSchema),
   removeSavedStories,
-);
-
-router.get(
-  '/saved',
-  authenticate,
-  celebrate(getSavedStoriesSchema),
-  getSavedStories,
 );
 
 export default router;
